@@ -4,7 +4,7 @@ yum -y groupinstall "Development Tools"
 yum -y install openssl openssl-devel wget
 
 # Get and unpack clamav source
-wget https://www.clamav.net/downloads/production/clamav-0.101.1.tar.gz
+wget --timeout=60 https://www.clamav.net/downloads/production/clamav-0.101.1.tar.gz
 tar -xvf clamav-0.101.1.tar.gz
 cd clamav-0.101.1
 
