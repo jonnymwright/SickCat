@@ -23,3 +23,5 @@ chmod 777 ./bin/freshclam
 
 mkdir lib64
 cp -r /var/task/lib64/* ./lib64
+
+zip -r scan.zip bin config etc lib64 src

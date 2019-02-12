@@ -1,6 +1,9 @@
 provider "aws" {
   region = "eu-west-2"
 }
+variable "privateKeyLocation" {
+  type = "string"
+}
 
 resource "aws_instance" "binaries_builder_instance" {
   # Hard coded to Amazon Linux 2018
@@ -15,6 +18,20 @@ resource "aws_instance" "binaries_builder_instance" {
 
   security_groups = ["${aws_security_group.ssh_access.name}"]
 
+    provisioner "remote-exec" {
+      inline = [
+        "mkdir config",
+        "mkdir src",
+        "mkdir etc",
+      ]
+
+      connection {
+        type        = "ssh"
+        user        = "ec2-user"
+        private_key = "${file(var.privateKeyLocation)}"
+      }
+    }
+
     provisioner "file" {
       source      = "./build.sh"
       destination = "~/build.sh"
@@ -22,20 +39,51 @@ resource "aws_instance" "binaries_builder_instance" {
       connection {
         type        = "ssh"
         user        = "ec2-user"
-        private_key = "${file("C:\\Users\\jmwright\\Documents\\Keys\\JonnyKey AWS.pem")}"
+        private_key = "${file(var.privateKeyLocation)}"
       }
     }
 
-    provisioner "remote-exec" {
-      inline = [
-        "ping -c 2 8.8.8.8",
-        "ping -c 2 www.clamav.net",
-      ]
+    provisioner "file" {
+      source      = "./config/local.yaml"
+      destination = "~/config/local.yaml"
 
       connection {
         type        = "ssh"
         user        = "ec2-user"
-        private_key = "${file("C:\\Users\\jmwright\\Documents\\Keys\\JonnyKey AWS.pem")}"
+        private_key = "${file(var.privateKeyLocation)}"
+      }
+    }
+    
+    provisioner "file" {
+      source      = "./etc/freshclam.conf"
+      destination = "~/etc/freshclam.conf"
+
+      connection {
+        type        = "ssh"
+        user        = "ec2-user"
+        private_key = "${file(var.privateKeyLocation)}"
+      }
+    }
+    
+    provisioner "file" {
+      source      = "./dist/handler.js"
+      destination = "~/src/handler.js"
+
+      connection {
+        type        = "ssh"
+        user        = "ec2-user"
+        private_key = "${file(var.privateKeyLocation)}"
+      }
+    }
+    
+    provisioner "file" {
+      source      = "./dist/update.js"
+      destination = "~/src/update.js"
+
+      connection {
+        type        = "ssh"
+        user        = "ec2-user"
+        private_key = "${file(var.privateKeyLocation)}"
       }
     }
     
@@ -43,13 +91,13 @@ resource "aws_instance" "binaries_builder_instance" {
       inline = [
         "cd ~",
         "sudo chmod 777 build.sh",
-        "sudo sh build.sh",
+        "sudo sh build.sh"
       ]
 
       connection {
         type        = "ssh"
         user        = "ec2-user"
-        private_key = "${file("C:\\Users\\jmwright\\Documents\\Keys\\JonnyKey AWS.pem")}"
+        private_key = "${file(var.privateKeyLocation)}"
       }
     }
 }
@@ -70,5 +118,13 @@ resource "aws_security_group" "ssh_access" {
     from_port   = 0
     to_port     = 0
     cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# Get the zip that was created
+resource "null_resource" "FTP_get_zip" {
+  provisioner "local-exec" {
+    command = "sftp -i '${var.privateKeyLocation}' -o StrictHostKeyChecking=accept-new ec2-user@${aws_instance.binaries_builder_instance.public_ip}:/home/ec2-user/scan.zip . "
+    interpreter = ["PowerShell", "-Command"]
   }
 }

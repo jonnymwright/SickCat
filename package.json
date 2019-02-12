@@ -5,9 +5,9 @@
   "description": "Virus scans uploaded documents and moves clean ones to a secured space",
   "main": "./src/index.js",
   "scripts": {
-    "test": "echo no kitty-cat-lambda-common tests at present",
-    "build": "npx webpack",
-    "integration-test": "echo no kitty-cat-lambda-common tests at present"
+    "test": "echo no kitty-cat-virus-scan-builder tests at present",
+    "integration-test": "echo no kitty-cat-virus-scan-builder tests at present",
+    "build": "npx webpack && terraform apply --auto-approve && terraform destroy --auto-approve"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
