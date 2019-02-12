@@ -7,7 +7,8 @@
   "scripts": {
     "test": "echo no kitty-cat-virus-scan-builder tests at present",
     "integration-test": "echo no kitty-cat-virus-scan-builder tests at present",
-    "build": "npx webpack && terraform apply --auto-approve && terraform destroy --auto-approve"
+    "build": "npx webpack && terraform apply --auto-approve",
+    "teardown": "terraform destroy --auto-approve"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",

@@ -29,7 +29,7 @@ resource "aws_instance" "binaries_builder_instance" {
     connection {
       type        = "ssh"
       user        = "ec2-user"
-      private_key = "${file(var.privateKey)}"
+      private_key = "${file("${var.privateKey}.pem")}"
     }
   }
 
@@ -40,7 +40,7 @@ resource "aws_instance" "binaries_builder_instance" {
     connection {
       type        = "ssh"
       user        = "ec2-user"
-      private_key = "${file(var.privateKey)}"
+      private_key = "${file("${var.privateKey}.pem")}"
     }
   }
 
@@ -51,7 +51,7 @@ resource "aws_instance" "binaries_builder_instance" {
     connection {
       type        = "ssh"
       user        = "ec2-user"
-      private_key = "${file(var.privateKey)}"
+      private_key = "${file("${var.privateKey}.pem")}"
     }
   }
 
@@ -62,7 +62,7 @@ resource "aws_instance" "binaries_builder_instance" {
     connection {
       type        = "ssh"
       user        = "ec2-user"
-      private_key = "${file(var.privateKey)}"
+      private_key = "${file("${var.privateKey}.pem")}"
     }
   }
 
@@ -73,7 +73,7 @@ resource "aws_instance" "binaries_builder_instance" {
     connection {
       type        = "ssh"
       user        = "ec2-user"
-      private_key = "${file(var.privateKey)}"
+      private_key = "${file("${var.privateKey}.pem")}"
     }
   }
 
@@ -84,7 +84,7 @@ resource "aws_instance" "binaries_builder_instance" {
     connection {
       type        = "ssh"
       user        = "ec2-user"
-      private_key = "${file(var.privateKey)}"
+      private_key = "${file("${var.privateKey}.pem")}"
     }
   }
 
@@ -99,7 +99,7 @@ resource "aws_instance" "binaries_builder_instance" {
     connection {
       type        = "ssh"
       user        = "ec2-user"
-      private_key = "${file(var.privateKey)}"
+      private_key = "${file("${var.privateKey}.pem")}"
     }
   }
 }
@@ -121,4 +121,9 @@ resource "aws_security_group" "ssh_access" {
     to_port     = 0
     cidr_blocks = ["0.0.0.0/0"]
   }
+}
+
+# Useful info for next steps
+output "FTP_details" {
+  value = "Finished. Now FTP into ${aws_instance.binaries_builder_instance.public_ip} with the user 'ec2-user' and the private key ${var.privateKey}.pem."
 }
